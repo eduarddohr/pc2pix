@@ -217,8 +217,7 @@ def plot_images(generator,
                 step=0,
                 title=None,
                 dir_name="gan_images"):
-    os.makedirs(dir_name, exist_ok=True)
-    filename = os.path.join(dir_name, "%06d.png" % step)
+    filename = "/content/drive/My Drive/Licenta/Dohr/gan_images/" + "%06d.png" % step
     rows = int(math.sqrt(pc_code.shape[0]))
     images = generator.predict([noise, pc_code, elev_code, azim_code])
     images *= 0.5
