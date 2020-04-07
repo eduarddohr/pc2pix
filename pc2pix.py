@@ -4,10 +4,12 @@ Training:
 
 From scratch (chair dataset):
     python3 pc2pix.py --ptcloud_ae_weights=model_weights/ptcloud/chair-pt-cloud-stacked-ae-chamfer-5-ae-weights-32.h5 -t -p=32 --generator=model_weights/pc2pix/all-gen-color.h5 --kernel_size=5
+    python pc2pix.py --ptcloud_ae_weights=model_weights/ptcloud/chair-pt-cloud-stacked-ae-chamfer-5-ae-weights-32.h5 -t -p=32 --generator=model_weights/pc2pix/all-gen-color-512.h5 --kernel_size=5
 
 With pre-trained weights (chair dataset):
     python3 pc2pix.py --ptcloud_ae_weights=model_weights/ptcloud/chair-pt-cloud-stacked-ae-chamfer-5-ae-weights-32.h5 -t -p=32 --generator=model_weights/pc2pix/chair-gen-color.h5 --discriminator=model_weights/pc2pix/chair-dis-color.h5 --kernel_size=5
-
+    python pc2pix.py --ptcloud_ae_weights=model_weights/ptcloud/chair-pt-cloud-stacked-ae-chamfer-5-ae-weights-32.h5 -t -p=32 --generator=model_weights/pc2pix/chair-gen-color.h5 --discriminator=model_weights/pc2pix/chair-dis-color.h5 --kernel_size=5
+    python pc2pix.py --ptcloud_ae_weights=model_weights/ptcloud/all-pt-cloud-stacked-ae-emd-5-ae-weights-512.h5 -t -p=512 --generator=model_weights/pc2pix/all-gen-color-512.h5 --discriminator=model_weights/pc2pix/all-dis-color-512.h5 --kernel_size=5 --norm
 All classes. Change "chair" to "all", 32 to 512. Add --norm
 
 '''
@@ -46,7 +48,7 @@ class PC2Pix():
                  gw=None,
                  dw=None,
                  pc_code_dim=32,
-                 batch_size=64,
+                 batch_size=2,
                  color=True,
                  gpus=1,
                  norm=False,
@@ -65,16 +67,16 @@ class PC2Pix():
         self.generator = None
         self.discriminator = None
         self.adversarial = None
-        os.makedirs(self.model_dir, exist_ok=True) 
-        os.makedirs("weights", exist_ok=True) 
+        os.makedirs(self.model_dir, exist_ok=True)
+        os.makedirs("weights", exist_ok=True)
         self.color = color
         self.gen_spectral_normalization = False
 
         if color:
             # color images 128x128 rgb
-            items = ['im_128', 'pc', 'elev', 'azim']
+            # items = ['im_128', 'pc', 'elev', 'azim']
             # if big color (224 x 224) rgb
-            # items = ['im', 'pc', 'elev', 'azim']
+            items = ['im', 'pc', 'elev', 'azim']
         else:
             # graycale images 224x224
             items = ['gray', 'pc', 'elev', 'azim']
@@ -98,8 +100,8 @@ class PC2Pix():
         self.test_source = DataSource(batch_size=36, smids='test', items=items, nepochs=20, split_file=self.split_file)
 
         self.build_gan()
-        
-       
+
+
     def generate_fake_pc_codes(self):
         fake_pc_codes = None
         start_time = datetime.datetime.now()
@@ -123,6 +125,7 @@ class PC2Pix():
 
 
     def train_gan(self):
+        print("am intrat in train\n")
         plot_interval = 500
         save_interval = 500
         start_time = datetime.datetime.now()
@@ -138,13 +141,14 @@ class PC2Pix():
         test_azim_code *= 0.5
         test_azim_code += 0.5
         ###
+        print("inainte de ceva plot\n")
         plot_image(test_image, color=self.color)
 
         valid = np.ones([self.batch_size, 1])
         fake = np.zeros([self.batch_size, 1])
-                            
+
         valid_fake = np.concatenate((valid, fake))
-        epochs = 120
+        epochs = 20
         train_steps = self.train_steps * epochs
 
         fake_pc_codes = np.load(self.pc_codes_filename)
@@ -156,8 +160,14 @@ class PC2Pix():
         print("test_azim_code min: ", np.amin(test_azim_code), " test_azim_code max: ", np.amax(test_azim_code))
         print("batch_size: ", self.batch_size, " pc_code_dim: ", self.pc_code_dim)
         print("Color images: ", self.color)
-
-        for step in range(train_steps):
+        option_file = open("weights/opt.txt", "r")
+        steps_done = option_file.readline()
+        # total_time_spent = option_file.readline()
+        # total_time_spent = total_time_spent.split('.')
+        # start_time = start_time - datetime.datetime.strptime(total_time_spent[0], "%H:%M:%S")
+        option_file.close()
+        # steps_done = 0
+        for step in range(int(steps_done), train_steps):
             real_image, real_pc, real_elev_code, real_azim_code = self.train_source.next_batch()
             real_image -= 0.5
             real_image /= 0.5
@@ -165,7 +175,7 @@ class PC2Pix():
             real_pc = real_pc / 0.5
             real_pc_code = self.ptcloud_ae.encoder.predict(real_pc)
 
-            rand_indexes = np.random.randint(0, fake_pc_codes_len, size=self.batch_size) 
+            rand_indexes = np.random.randint(0, fake_pc_codes_len, size=self.batch_size)
             fake_pc_code = fake_pc_codes[rand_indexes]
 
             pc_code = np.concatenate((real_pc_code, fake_pc_code))
@@ -188,10 +198,10 @@ class PC2Pix():
             x = np.concatenate((real_image, fake_image))
             metrics  = self.discriminator.train_on_batch(x, [valid_fake, pc_code, elev_code, azim_code])
             pcent = step * 100.0 / train_steps
-            fmt = "%02.4f%%/%06d:[loss:%02.6f d:%02.6f pc:%02.6f elev:%02.6f azim:%02.6f]" 
+            fmt = "%02.4f%%/%06d:[loss:%02.6f d:%02.6f pc:%02.6f elev:%02.6f azim:%02.6f]"
             log = fmt % (pcent, step, metrics[0], metrics[1], metrics[2], metrics[3], metrics[4])
 
-            rand_indexes = np.random.randint(0, fake_pc_codes_len, size=self.batch_size) 
+            rand_indexes = np.random.randint(0, fake_pc_codes_len, size=self.batch_size)
             fake_pc_code = fake_pc_codes[rand_indexes]
 
             ###
@@ -204,7 +214,7 @@ class PC2Pix():
 
             metrics  = self.adversarial.train_on_batch([noise, fake_pc_code, fake_elev_code, fake_azim_code],
                                                        [valid, fake_pc_code, fake_elev_code, fake_azim_code])
-            fmt = "%s [loss:%02.6f a:%02.6f pc:%02.6f elev:%02.6f azim:%02.6f]" 
+            fmt = "%s [loss:%02.6f a:%02.6f pc:%02.6f elev:%02.6f azim:%02.6f]"
             log = fmt % (log, metrics[0], metrics[1], metrics[2], metrics[3], metrics[4])
 
             elapsed_time = datetime.datetime.now() - start_time
@@ -232,7 +242,6 @@ class PC2Pix():
                     prefix += "-gray"
                 if self.gen_spectral_normalization:
                     prefix += "-sn"
-                prefix += "-" + str(self.pc_code_dim)
                 fname = os.path.join("weights", prefix + ".h5")
                 self.generator_single.save_weights(fname)
                 prefix = self.category + "-dis"
@@ -242,8 +251,13 @@ class PC2Pix():
                     prefix += "-gray"
                 if self.gen_spectral_normalization:
                     prefix += "-sn"
-                prefix += "-" + str(self.pc_code_dim)
                 fname = os.path.join("weights", prefix + ".h5")
+                option_file = open("weights/opt.txt", "w")
+                option_file.write(str(step))
+                # option_file.write('\n')
+                # elapsed_time_string = "%s" % elapsed_time
+                # option_file.write(elapsed_time_string)
+                option_file.close()
                 self.discriminator_single.save_weights(fname)
 
 
@@ -296,12 +310,13 @@ class PC2Pix():
                     self.discriminator_single.load_weights(self.dw)
 
             self.discriminator = multi_gpu_model(self.discriminator_single, gpus=self.gpus)
-	
+
         loss = ['binary_crossentropy', 'mae', self.elev_loss, self.azim_loss]
         loss_weights = [1., 10., 10., 10.]
         self.discriminator.compile(loss=loss,
                                    loss_weights=loss_weights,
                                    optimizer=optimizer)
+        print("discriminator summary:\n")
         self.discriminator_single.summary()
         path = os.path.join(self.model_dir, "discriminator.png")
         plot_model(self.discriminator_single, to_file=path, show_shapes=True)
@@ -338,8 +353,8 @@ class PC2Pix():
         self.generator_single.summary()
         path = os.path.join(self.model_dir, "generator.png")
         plot_model(self.generator_single, to_file=path, show_shapes=True)
-        
-        self.discriminator.trainable = False
+
+        self.discriminator.trainable = True
         if self.gen_spectral_normalization:
             optimizer = Adam(lr=1e-4, beta_1=0.0, beta_2=0.9)
         else:
@@ -398,7 +413,7 @@ if __name__ == '__main__':
     help_ = "Batch size"
     parser.add_argument("-b", "--batch_size", type=int, default=64, help=help_)
     help_ = "Shapnet category or class (chair, airplane, etc)"
-    parser.add_argument("-c", "--category", default='all', help=help_)
+    parser.add_argument("-c", "--category", default='chair', help=help_)
     help_ = "Number of GPUs (default is 1)"
     parser.add_argument("--gpus", type=int, default=1, help=help_)
     help_ = "PC Stacked kernel size"
