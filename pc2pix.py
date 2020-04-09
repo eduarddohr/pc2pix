@@ -79,7 +79,7 @@ class PC2Pix():
             items = ['im', 'pc', 'elev', 'azim']
         else:
             # graycale images 224x224
-            items = ['gray', 'pc', 'elev', 'azim']
+            items = ['gray_128', 'pc', 'elev', 'azim']
         if category == 'all':
             if norm:
                 path = 'all_exp_norm.json'
