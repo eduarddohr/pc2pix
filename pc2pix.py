@@ -76,7 +76,7 @@ class PC2Pix():
             # color images 128x128 rgb
             # items = ['im_128', 'pc', 'elev', 'azim']
             # if big color (224 x 224) rgb
-            items = ['im', 'pc', 'elev', 'azim']
+            items = ['im_128', 'pc', 'elev', 'azim']
         else:
             # graycale images 224x224
             items = ['gray_128', 'pc', 'elev', 'azim']
