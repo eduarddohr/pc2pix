@@ -38,10 +38,93 @@ class GlobalSumPooling2D(_GlobalPooling2D):
             return K.sum(inputs, axis=[2, 3])
 
 
-def ResBlock(input_shape, sampling=None, trainable_sortcut=True, 
+def ResBlock(input_shape, sampling=None, trainable_sortcut=True,
              spectral_normalization=False, batch_normalization=True,
              bn_momentum=0.9, bn_epsilon=0.00002,
-             channels=256, k_size=3, summary=False,
+             channels=256, k_size=3, summary=True,
+             plot=False, name=None):
+
+    res_block_input = Input(shape=input_shape)
+
+    if batch_normalization:
+        res_block_1 = BatchNormalization(momentum=bn_momentum, epsilon=bn_epsilon)(res_block_input)
+    else:
+        res_block_1 = res_block_input
+
+    res_block_1 = Activation('relu')(res_block_1)
+
+    if spectral_normalization:
+        res_block_1 = ConvSN2D(channels // 4, 1, strides=1, padding='same', kernel_initializer='glorot_uniform')(
+            res_block_1)
+    else:
+        res_block_1 = Conv2D(channels // 4, 1, strides=1, padding='same', kernel_initializer='glorot_uniform')(
+            res_block_1)
+
+    if sampling == 'up':
+        res_block_1 = UpSampling2D()(res_block_1)
+    else:
+        pass
+
+    if batch_normalization:
+        res_block_2 = BatchNormalization(momentum=bn_momentum, epsilon=bn_epsilon)(res_block_1)
+    else:
+        res_block_2 = res_block_1
+    res_block_2 = Activation('relu')(res_block_2)
+
+    if spectral_normalization:
+        res_block_2 = ConvSN2D(channels // 4, k_size, strides=1, padding='same', kernel_initializer='glorot_uniform')(
+            res_block_2)
+    else:
+        res_block_2 = Conv2D(channels // 4, k_size, strides=1, padding='same', kernel_initializer='glorot_uniform')(
+            res_block_2)
+
+    if sampling == 'down':
+        res_block_2 = AveragePooling2D()(res_block_2)
+    else:
+        pass
+
+    if batch_normalization:
+        res_block_3 = BatchNormalization(momentum=bn_momentum, epsilon=bn_epsilon)(res_block_2)
+    else:
+        res_block_3 = res_block_2
+    res_block_3 = Activation('relu')(res_block_3)
+
+    if spectral_normalization:
+        res_block_3 = ConvSN2D(channels, 1, strides=1, padding='same', kernel_initializer='glorot_uniform')(res_block_3)
+    else:
+        res_block_3 = Conv2D(channels, 1, strides=1, padding='same', kernel_initializer='glorot_uniform')(res_block_3)
+
+    if trainable_sortcut:
+        if spectral_normalization:
+            short_cut = ConvSN2D(channels, 1, strides=1, padding='same', kernel_initializer='glorot_uniform')(res_block_input)
+        else:
+            short_cut = Conv2D(channels, 1, strides=1, padding='same', kernel_initializer='glorot_uniform')(res_block_input)
+    else:
+        short_cut = res_block_input
+
+    if sampling == 'up':
+        short_cut = UpSampling2D()(short_cut)
+    elif sampling == 'down':
+        short_cut = AveragePooling2D()(short_cut)
+    elif sampling == 'None':
+        pass
+
+    res_block_add = Add()([short_cut, res_block_3])
+
+    res_block = Model(res_block_input, res_block_add, name=name)
+
+    if plot:
+        plot_model(res_block, name + '.png', show_layer_names=False)
+    if summary:
+        print(name)
+        res_block.summary()
+
+    return res_block
+
+def ResBlockOriginal(input_shape, sampling=None, trainable_sortcut=True,
+             spectral_normalization=False, batch_normalization=True,
+             bn_momentum=0.9, bn_epsilon=0.00002,
+             channels=256, k_size=3, summary=True,
              plot=False, name=None):
     '''
     ResBlock(input_shape, sampling=None, trainable_sortcut=True, 
