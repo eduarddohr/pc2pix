@@ -219,7 +219,7 @@ class PC2Pix():
 
             elapsed_time = datetime.datetime.now() - start_time
             log = "%s [time: %s]" % (log, elapsed_time)
-            print(log)
+            
             if (step + 1) % plot_interval == 0 or step == 0:
                 # plot generator images on a periodic basis
                 show = False
@@ -234,7 +234,7 @@ class PC2Pix():
 
             if (step + 1) % save_interval == 0 or step == 0:
                 # save weights on a periodic basis
-
+				print(log)
                 prefix = self.category + "-gen"
                 if self.color:
                     prefix += "-color"
