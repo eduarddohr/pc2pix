@@ -38,10 +38,10 @@ class GlobalSumPooling2D(_GlobalPooling2D):
             return K.sum(inputs, axis=[2, 3])
 
 
-def ResBlock(input_shape, sampling=None, trainable_sortcut=True,
+def ResBlockBottleneck(input_shape, sampling=None, trainable_sortcut=True,
              spectral_normalization=False, batch_normalization=True,
              bn_momentum=0.9, bn_epsilon=0.00002,
-             channels=256, k_size=3, summary=True,
+             channels=256, k_size=3, summary=False,
              plot=False, name=None):
 
     res_block_input = Input(shape=input_shape)
@@ -121,10 +121,10 @@ def ResBlock(input_shape, sampling=None, trainable_sortcut=True,
 
     return res_block
 
-def ResBlockOriginal(input_shape, sampling=None, trainable_sortcut=True,
+def ResBlock(input_shape, sampling=None, trainable_sortcut=True,
              spectral_normalization=False, batch_normalization=True,
              bn_momentum=0.9, bn_epsilon=0.00002,
-             channels=256, k_size=3, summary=True,
+             channels=256, k_size=3, summary=False,
              plot=False, name=None):
     '''
     ResBlock(input_shape, sampling=None, trainable_sortcut=True, 

@@ -234,7 +234,7 @@ class PC2Pix():
 
             if (step + 1) % save_interval == 0 or step == 0:
                 # save weights on a periodic basis
-				print(log)
+                print(log)
                 prefix = self.category + "-gen"
                 if self.color:
                     prefix += "-color"
