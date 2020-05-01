@@ -75,6 +75,12 @@ class DataSource():
                 img = np.reshape(img, (-1, s[2], s[3], s[4]))
                 ret.append(img)
 
+            if 'im_64' in self.items:
+                img = batch_data['im_64']
+                s = img.shape
+                img = np.reshape(img, (-1, s[2], s[3], s[4]))
+                ret.append(img)
+
             if 'gray' in self.items:
                 img = batch_data['gray']
                 s = img.shape

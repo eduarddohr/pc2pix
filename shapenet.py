@@ -54,6 +54,7 @@ class ShapeNet(object):
         self.load_func = {
             'im': self.get_im,
             'im_128': self.get_im_128,
+            'im_64': self.get_im_64,
             'depth': self.get_depth,
             'K': self.get_K,
             'R': self.get_R,
@@ -142,6 +143,14 @@ class ShapeNet(object):
         ims = []
         for ix in rand_idx:
             f = osp.join(self.im_dir, sid, mid, 'render_{:d}_128.png'.format(ix))
+            ims.append(read_im(f))
+        return np.stack(ims, axis=0)
+
+    def get_im_64(self, sid, mid, idx):
+        rand_idx = idx
+        ims = []
+        for ix in rand_idx:
+            f = osp.join(self.im_dir, sid, mid, 'render_{:d}_64.png'.format(ix))
             ims.append(read_im(f))
         return np.stack(ims, axis=0)
 
