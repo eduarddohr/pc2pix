@@ -259,7 +259,7 @@ class PC2Pix():
                 option_file.close()
 
                 history_file = open("/content/drive/My Drive/Licenta/Dohr/saved_weights/history.txt", "a")
-                history_file.writelines(log)
+                history_file.write(log + "\n")
                 history_file.close()
 
             if (step + 1) % (save_interval * 4) == 0:
