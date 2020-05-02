@@ -219,7 +219,7 @@ class PC2Pix():
 
             elapsed_time = datetime.datetime.now() - start_time
             log = "%s [time: %s]" % (log, elapsed_time)
-            
+
             if (step + 1) % plot_interval == 0 or step == 0:
                 # plot generator images on a periodic basis
                 show = False
@@ -263,7 +263,8 @@ class PC2Pix():
                 history_file.close()
 
             if (step + 1) % (save_interval * 4) == 0:
-                os.mkdir("/content/drive/My Drive/Licenta/Dohr/saved_weights/backup/resnet50_" + str(step))
+                if os.path.isdir("/content/drive/My Drive/Licenta/Dohr/saved_weights/backup/resnet50_" + str(step)) == False:
+                    os.mkdir("/content/drive/My Drive/Licenta/Dohr/saved_weights/backup/resnet50_" + str(step))
                 self.generator_single.save_weights(
                     "/content/drive/My Drive/Licenta/Dohr/saved_weights/backup/resnet50_" + str(step) + "/chair-gen-color-" + str(step) + ".h5")
                 self.discriminator_single.save_weights(
