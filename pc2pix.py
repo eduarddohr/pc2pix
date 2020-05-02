@@ -265,9 +265,9 @@ class PC2Pix():
             if (step + 1) % (save_interval * 4) == 0:
                 os.mkdir("/content/drive/My Drive/Licenta/Dohr/saved_weights/backup/resnet50_" + str(step))
                 self.generator_single.save_weights(
-                    "/content/drive/My Drive/Licenta/Dohr/saved_weights/backup/chair-gen-color-" + str(step) + ".h5")
+                    "/content/drive/My Drive/Licenta/Dohr/saved_weights/backup/resnet50_" + str(step) + "/chair-gen-color-" + str(step) + ".h5")
                 self.discriminator_single.save_weights(
-                    "/content/drive/My Drive/Licenta/Dohr/saved_weights/backup/chair-gen-color-" + str(step) + ".h5")
+                    "/content/drive/My Drive/Licenta/Dohr/saved_weights/backup/resnet50_" + str(step) + "/chair-dis-color-" + str(step) + ".h5")
 
 
     def azim_loss(self, y_true, y_pred):
