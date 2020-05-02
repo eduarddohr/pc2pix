@@ -252,13 +252,22 @@ class PC2Pix():
                 if self.gen_spectral_normalization:
                     prefix += "-sn"
                 fname = "/content/drive/My Drive/Licenta/Dohr/saved_weights/" + prefix + ".h5"
+                self.discriminator_single.save_weights(fname)
+
                 option_file = open("/content/drive/My Drive/Licenta/Dohr/saved_weights/opt.txt", "w")
                 option_file.write(str(step))
-                # option_file.write('\n')
-                # elapsed_time_string = "%s" % elapsed_time
-                # option_file.write(elapsed_time_string)
                 option_file.close()
-                self.discriminator_single.save_weights(fname)
+
+                history_file = open("/content/drive/My Drive/Licenta/Dohr/saved_weights/history.txt", "a")
+                history_file.write(log)
+                history_file.close()
+
+            if (step + 1) % (save_interval * 4) == 0:
+                os.mkdir("/content/drive/My Drive/Licenta/Dohr/saved_weights/backup/resnet50_" + str(step))
+                self.generator_single.save_weights(
+                    "/content/drive/My Drive/Licenta/Dohr/saved_weights/backup/chair-gen-color-" + str(step) + ".h5")
+                self.discriminator_single.save_weights(
+                    "/content/drive/My Drive/Licenta/Dohr/saved_weights/backup/chair-gen-color-" + str(step) + ".h5")
 
 
     def azim_loss(self, y_true, y_pred):
