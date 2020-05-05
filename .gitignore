@@ -9,3 +9,6 @@ weights/
 external/
 saved_models/
 __pycache__/
+64_images.rar
+retrain/
+pc_codes/all-512-pc_codes.npy

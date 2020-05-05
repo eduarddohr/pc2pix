@@ -5,9 +5,11 @@
       <excludeFolder url="file://$MODULE_DIR$/128_images" />
       <excludeFolder url="file://$MODULE_DIR$/64_images" />
       <excludeFolder url="file://$MODULE_DIR$/data" />
+      <excludeFolder url="file://$MODULE_DIR$/venv" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="Python 3.6 (venv)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="pc2pix clean" />
   </component>
   <component name="PyDocumentationSettings">
     <option name="format" value="PLAIN" />
