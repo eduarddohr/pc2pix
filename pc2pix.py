@@ -76,7 +76,7 @@ class PC2Pix():
             # color images 128x128 rgb
             # items = ['im_128', 'pc', 'elev', 'azim']
             # if big color (224 x 224) rgb
-            items = ['im_128', 'pc', 'elev', 'azim']
+            items = ['im_64', 'pc', 'elev', 'azim']
         else:
             # graycale images 224x224
             items = ['gray_128', 'pc', 'elev', 'azim']
@@ -231,10 +231,11 @@ class PC2Pix():
                             color=self.color,
                             show=show,
                             step=(step + 1))
-
+            if(step + 1) % 100 == 0 or step == 0:
+                print(log)
             if (step + 1) % save_interval == 0 or step == 0:
                 # save weights on a periodic basis
-                print(log)
+
                 prefix = self.category + "-gen"
                 if self.color:
                     prefix += "-color"
@@ -262,7 +263,7 @@ class PC2Pix():
                 history_file.write(log + "\n")
                 history_file.close()
 
-            if (step + 1) % (save_interval * 4) == 0:
+            if (step + 1) % (save_interval * 2) == 0:
                 if os.path.isdir("weights/backup/resnet50_" + str(step)) == False:
                     os.mkdir("weights/backup/resnet50_" + str(step))
                 self.generator_single.save_weights(
