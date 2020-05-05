@@ -40,6 +40,7 @@ import os
 import datetime
 sys.path.append("lib")
 import model
+import resnext
 
 
 class PC2Pix():
