@@ -1,3 +1,4 @@
+from keras.initializers import RandomNormal
 from keras.layers import Input, Dense, Conv2D, Add, Dot, Conv2DTranspose, Activation, Reshape,BatchNormalization,UpSampling2D,AveragePooling2D, GlobalAveragePooling2D, LeakyReLU, Reshape, Flatten
 from keras.models import Model, Sequential
 import keras.backend as K
@@ -422,188 +423,26 @@ def discriminator(input_shape,
 
     inputs = Input(shape=input_shape, name='image_input')
     channels = 64
-    # conv2.1
-    x = ResBlockBottleneck(input_shape=input_shape,
-                 channels=channels,
-                 sampling='None',
-                 batch_normalization=batch_normalization,
-                 spectral_normalization=spectral_normalization,
-                 name='dis_resblock_01')(inputs)
-
-    d = input_shape[0]
-    shape = (d, d, channels)
-
-    x = ResBlockBottleneck(input_shape=shape,
-                           channels=channels,
-                           sampling='None',
-                           batch_normalization=batch_normalization,
-                           spectral_normalization=spectral_normalization,
-                           name='dis_resblock_02')(x)
-
-    x = ResBlockBottleneck(input_shape=shape,
-                           channels=channels,
-                           sampling='down',
-                           batch_normalization=batch_normalization,
-                           spectral_normalization=spectral_normalization,
-                           name='dis_resblock_03')(x)
-    # conv2.2
-    d = input_shape[0] // 2
-    shape = (d, d, channels)
-    x = ResBlockBottleneck(input_shape=shape,
-                           channels=channels * 2,
-                           sampling='None',
-                           batch_normalization=batch_normalization,
-                           spectral_normalization=spectral_normalization,
-                           name='dis_resblock_10')(x)
-    shape = (d, d, channels * 2)
-    x = ResBlockBottleneck(input_shape=shape,
-                           channels=channels * 2,
-                           sampling='None',
-                           batch_normalization=batch_normalization,
-                           spectral_normalization=spectral_normalization,
-                           name='dis_resblock_11')(x)
-
-    x = ResBlockBottleneck(input_shape=shape,
-                           channels=channels * 2,
-                           sampling='None',
-                           batch_normalization=batch_normalization,
-                           spectral_normalization=spectral_normalization,
-                           name='dis_resblock_12')(x)
-    x = ResBlockBottleneck(input_shape=shape,
-                           channels=channels * 2,
-                           sampling='down',
-                           batch_normalization=batch_normalization,
-                           spectral_normalization=spectral_normalization,
-                           name='dis_resblock_13')(x)
-    channels *= 2
-
-    # conv2.3
-
-    d = input_shape[0] // 4
-    shape = (d, d, channels)
-
-    x = ResBlockBottleneck(input_shape=shape,
-                           channels=channels * 2,
-                           sampling='None',
-                           batch_normalization=batch_normalization,
-                           spectral_normalization=spectral_normalization,
-                           name='dis_resblock_20')(x)
-    shape = (d, d, channels * 2)
-    x = ResBlockBottleneck(input_shape=shape,
-                           channels=channels * 2,
-                           sampling='None',
-                           batch_normalization=batch_normalization,
-                           spectral_normalization=spectral_normalization,
-                           name='dis_resblock_21')(x)
-
-    x = ResBlockBottleneck(input_shape=shape,
-                           channels=channels * 2,
-                           sampling='None',
-                           batch_normalization=batch_normalization,
-                           spectral_normalization=spectral_normalization,
-                           name='dis_resblock_22')(x)
-    x = ResBlockBottleneck(input_shape=shape,
-                           channels=channels * 2,
-                           sampling='None',
-                           batch_normalization=batch_normalization,
-                           spectral_normalization=spectral_normalization,
-                           name='dis_resblock_23')(x)
-    x = ResBlockBottleneck(input_shape=shape,
-                           channels=channels * 2,
-                           sampling='None',
-                           batch_normalization=batch_normalization,
-                           spectral_normalization=spectral_normalization,
-                           name='dis_resblock_24')(x)
-    x = ResBlockBottleneck(input_shape=shape,
-                           channels=channels * 2,
-                           sampling='down',
-                           batch_normalization=batch_normalization,
-                           spectral_normalization=spectral_normalization,
-                           name='dis_resblock_25')(x)
-    channels *= 2
-    d = input_shape[0] // 8
-    shape = (d, d, channels)
-
-    x = ResBlockBottleneck(input_shape=shape,
-                           channels=channels * 2,
-                           sampling='None',
-                           batch_normalization=batch_normalization,
-                           spectral_normalization=spectral_normalization,
-                           name='dis_resblock_30')(x)
-    shape = (d, d, channels * 2)
-    x = ResBlockBottleneck(input_shape=shape,
-                           channels=channels * 2,
-                           sampling='None',
-                           batch_normalization=batch_normalization,
-                           spectral_normalization=spectral_normalization,
-                           name='dis_resblock_31')(x)
-
-    x = ResBlockBottleneck(input_shape=shape,
-                           channels=channels * 2,
-                           sampling='down',
-                           batch_normalization=batch_normalization,
-                           spectral_normalization=spectral_normalization,
-                           name='dis_resblock_32')(x)
-    channels *= 2
-
-    # d = input_shape[0] // 2
-    # shape = (d, d, channels)
-    # name = 'dis_resblock_1'
-    # x = ResBlockBottleneck(input_shape=shape,
-    #              channels=(channels * 2),
-    #              sampling='down',
-    #              batch_normalization=batch_normalization,
-    #              spectral_normalization=spectral_normalization,
-    #              name=name)(x)
-    # channels *= 2
-    #
-    # d = input_shape[0] // 4
-    # shape = (d, d, channels)
-    # name = 'dis_resblock_2'
-    # x = ResBlockBottleneck(input_shape=shape,
-    #              channels=(channels * 2),
-    #              sampling='down',
-    #              batch_normalization=batch_normalization,
-    #              spectral_normalization=spectral_normalization,
-    #              name=name)(x)
-    # channels *= 2
-    #
-    # d = input_shape[0] // 8
-    # shape = (d, d, channels)
-    # name = 'dis_resblock_3'
-    # x = ResBlockBottleneck(input_shape=shape,
-    #              channels=(channels * 2),
-    #              sampling='down',
-    #              batch_normalization=batch_normalization,
-    #              spectral_normalization=spectral_normalization,
-    #              name=name)(x)
-    # channels *= 2
-    aux_layer_pc = Flatten(name='aux_layer_pc')(x)
-
-    # d = input_shape[0] // 16
-    # shape = (d, d, channels)
-    # name = 'dis_resblock_4'
-    # x = ResBlockBottleneck(input_shape=shape,
-    #              channels=(channels * 2),
-    #              sampling='down',
-    #              batch_normalization=batch_normalization,
-    #              spectral_normalization=spectral_normalization,
-    #              name=name)(x)
-    # channels *= 2
-    #
-    # d = input_shape[0] // 32
-    # shape = (d, d, channels)
-    # name = 'dis_resblock_5'
-    # x = ResBlockBottleneck(input_shape=shape,
-    #              channels=channels,
-    #              sampling=None,
-    #              batch_normalization=batch_normalization,
-    #              spectral_normalization=spectral_normalization,
-    #              name=name)(x)
-
-    x = Activation('relu')(x)
-    x = GlobalSumPooling2D()(x)
-    preal = DenseSN(1, activation='sigmoid', kernel_initializer='glorot_uniform', name='real_fake')(x)
+    init = RandomNormal(stddev=0.02)
+    # C64
+    d = ConvSN2D(64, kernel_size=(5, 5), strides=(2, 2), padding='same', kernel_initializer=init)(inputs)
+    d = LeakyReLU(alpha=0.2)(d)
+    # C128
+    d = ConvSN2D(128, kernel_size=(5, 5), strides=(2, 2), padding='same', kernel_initializer=init)(d)
+    d = LeakyReLU(alpha=0.2)(d)
+    # C256
+    d = ConvSN2D(256, kernel_size=(5, 5), strides=(2, 2), padding='same', kernel_initializer=init)(d)
+    d = LeakyReLU(alpha=0.2)(d)
+    # C512
+    d = ConvSN2D(512, kernel_size=(5, 5), strides=(2, 2), padding='same', kernel_initializer=init)(d)
+    d = LeakyReLU(alpha=0.2)(d)
+    aux_layer_pc = Flatten(name='aux_layer_pc')(d)
+    # second last output layer
+    d = ConvSN2D(512, kernel_size=(3, 3), padding='same', kernel_initializer=init)(d)
+    d = LeakyReLU(alpha=0.2)(d)
+    # patch output
+    d = Conv2D(1, kernel_size=(3, 3), padding='same', kernel_initializer=init)(d)
+    patch_out = Activation('sigmoid')(d)
 
     aux_layer_pc = DenseSN(256, activation='relu')(aux_layer_pc)
     reco_pc_code = DenseSN(1024, activation='relu')(aux_layer_pc)
@@ -611,11 +450,11 @@ def discriminator(input_shape,
     reco_pc_code = DenseSN(1024, activation='relu')(reco_pc_code)
     reco_pc_code = DenseSN(pc_code_dim, activation='linear', name='reco_pc_code')(reco_pc_code)
 
-    reco_azim_code = DenseSN(1, activation='sigmoid', kernel_initializer='glorot_uniform', name='reco_azim_code')(x)
+    reco_azim_code = DenseSN(1, activation='sigmoid', kernel_initializer='glorot_uniform', name='reco_azim_code')(d)
 
-    reco_elev_code = DenseSN(1, activation='sigmoid', kernel_initializer='glorot_uniform', name='reco_elev_code')(x)
+    reco_elev_code = DenseSN(1, activation='sigmoid', kernel_initializer='glorot_uniform', name='reco_elev_code')(d)
 
-    outputs = [preal, reco_pc_code, reco_elev_code, reco_azim_code]
+    outputs = [patch_out, reco_pc_code, reco_elev_code, reco_azim_code]
 
     return Model(inputs, outputs, name='discriminator')
 
