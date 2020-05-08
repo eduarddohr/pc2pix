@@ -299,9 +299,9 @@ class PC2Pix():
 
         inputs = Input(shape=input_shape, name='image_input')
         if self.gen_spectral_normalization:
-            optimizer = Adam(lr=4e-4, beta_1=0.0, beta_2=0.9)
+            optimizer = Adam(lr=2e-4, beta_1=0.0, beta_2=0.9)
         else:
-            optimizer = Adam(lr=2e-4, beta_1=0.5, beta_2=0.999)
+            optimizer = Adam(lr=1e-4, beta_1=0.5, beta_2=0.999)
 
         # build discriminator
         # by default, discriminator uses SN
@@ -367,9 +367,9 @@ class PC2Pix():
 
         self.discriminator.trainable = True
         if self.gen_spectral_normalization:
-            optimizer = Adam(lr=1e-4, beta_1=0.0, beta_2=0.9)
+            optimizer = Adam(lr=0.5e-4, beta_1=0.0, beta_2=0.9)
         else:
-            optimizer = Adam(lr=1e-4, beta_1=0.5, beta_2=0.999)
+            optimizer = Adam(lr=0.5e-4, beta_1=0.5, beta_2=0.999)
 
         if self.gpus <= 1:
             self.adversarial= Model([noise_code, pc_code, elev_code, azim_code],
