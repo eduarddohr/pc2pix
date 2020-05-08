@@ -438,11 +438,11 @@ def discriminator(input_shape,
     d = LeakyReLU(alpha=0.2)(d)
     aux_layer_pc = Flatten(name='aux_layer_pc')(d)
     # second last output layer
-    d = ConvSN2D(512, kernel_size=(3, 3), padding='same', kernel_initializer=init)(d)
+    d = ConvSN2D(512, kernel_size=(5, 5), padding='same', kernel_initializer=init)(d)
     d = LeakyReLU(alpha=0.2)(d)
+    d = GlobalSumPooling2D()(d)
     # patch output
-    d = Conv2D(1, kernel_size=(3, 3), padding='same', kernel_initializer=init)(d)
-    patch_out = Activation('sigmoid')(d)
+    preal = DenseSN(1, activation='sigmoid', kernel_initializer='glorot_uniform', name='real_fake')(d)
 
     aux_layer_pc = DenseSN(256, activation='relu')(aux_layer_pc)
     reco_pc_code = DenseSN(1024, activation='relu')(aux_layer_pc)
@@ -454,7 +454,7 @@ def discriminator(input_shape,
 
     reco_elev_code = DenseSN(1, activation='sigmoid', kernel_initializer='glorot_uniform', name='reco_elev_code')(d)
 
-    outputs = [patch_out, reco_pc_code, reco_elev_code, reco_azim_code]
+    outputs = [preal, reco_pc_code, reco_elev_code, reco_azim_code]
 
     return Model(inputs, outputs, name='discriminator')
 
