@@ -236,150 +236,7 @@ def generator(input_shape,
     name = 'gen_resblock_0'
     shape = (d, d, in_channels)
     out_channels = 1024
-    # conv2
-    x = ResBlockBottleneck(input_shape=shape,
-                 channels=out_channels,
-                 sampling='None',
-                 spectral_normalization=spectral_normalization,
-                 bn_epsilon=bn_epsilon,
-                 bn_momentum=bn_momentum,
-                 name='gen_resblock_01')(x)
-    shape = (d, d, out_channels)
-    x = ResBlockBottleneck(input_shape=shape,
-                 channels=out_channels,
-                 sampling='None',
-                 spectral_normalization=spectral_normalization,
-                 bn_epsilon=bn_epsilon,
-                 bn_momentum=bn_momentum,
-                 name='gen_resblock_02')(x)
-    x = ResBlockBottleneck(input_shape=shape,
-                 channels=out_channels,
-                 sampling='up',
-                 spectral_normalization=spectral_normalization,
-                 bn_epsilon=bn_epsilon,
-                 bn_momentum=bn_momentum,
-                 name='gen_resblock_03')(x)
-
-    #conv3
-    name = 'gen_resblock_1'
-    d = input_shape[0] // 16
-    shape = (d, d, in_channels)
-    out_channels = 512
-    x = ResBlockBottleneck(input_shape=shape,
-                 channels=out_channels,
-                 sampling='none',
-                 spectral_normalization=spectral_normalization,
-                 bn_epsilon=bn_epsilon,
-                 bn_momentum=bn_momentum,
-                 name='gen_resblock_10')(x)
-    shape = (d, d, out_channels)
-    x = ResBlockBottleneck(input_shape=shape,
-                 channels=out_channels,
-                 sampling='None',
-                 spectral_normalization=spectral_normalization,
-                 bn_epsilon=bn_epsilon,
-                 bn_momentum=bn_momentum,
-                 name='gen_resblock_11')(x)
-    x = ResBlockBottleneck(input_shape=shape,
-                 channels=out_channels,
-                 sampling='None',
-                 spectral_normalization=spectral_normalization,
-                 bn_epsilon=bn_epsilon,
-                 bn_momentum=bn_momentum,
-                 name='gen_resblock_12')(x)
-    x = ResBlockBottleneck(input_shape=shape,
-                 channels=out_channels,
-                 sampling='up',
-                 spectral_normalization=spectral_normalization,
-                 bn_epsilon=bn_epsilon,
-                 bn_momentum=bn_momentum,
-                 name='gen_resblock_13')(x)
-
-    #conv4
-    name = 'gen_resblock_2'
-    d = input_shape[0] // 8
-    in_channels = 512
-    shape = (d, d, in_channels)
-    out_channels = 256
-    x = ResBlockBottleneck(input_shape=shape,
-                 channels=out_channels,
-                 sampling='none',
-                 spectral_normalization=spectral_normalization,
-                 bn_epsilon=bn_epsilon,
-                 bn_momentum=bn_momentum,
-                 name='gen_resblock_20')(x)
-    shape = (d, d, out_channels)
-    x = ResBlockBottleneck(input_shape=shape,
-                 channels=out_channels,
-                 sampling='None',
-                 spectral_normalization=spectral_normalization,
-                 bn_epsilon=bn_epsilon,
-                 bn_momentum=bn_momentum,
-                 name='gen_resblock_21')(x)
-    x = ResBlockBottleneck(input_shape=shape,
-                 channels=out_channels,
-                 sampling='None',
-                 spectral_normalization=spectral_normalization,
-                 bn_epsilon=bn_epsilon,
-                 bn_momentum=bn_momentum,
-                 name='gen_resblock_22')(x)
-    x = ResBlockBottleneck(input_shape=shape,
-                 channels=out_channels,
-                 sampling='None',
-                 spectral_normalization=spectral_normalization,
-                 bn_epsilon=bn_epsilon,
-                 bn_momentum=bn_momentum,
-                 name='gen_resblock_23')(x)
-    x = ResBlockBottleneck(input_shape=shape,
-                 channels=out_channels,
-                 sampling='None',
-                 spectral_normalization=spectral_normalization,
-                 bn_epsilon=bn_epsilon,
-                 bn_momentum=bn_momentum,
-                 name='gen_resblock_24')(x)
-    x = ResBlockBottleneck(input_shape=shape,
-                 channels=out_channels,
-                 sampling='up',
-                 spectral_normalization=spectral_normalization,
-                 bn_epsilon=bn_epsilon,
-                 bn_momentum=bn_momentum,
-                 name='gen_resblock_25')(x)
-
-    #conv5
-    name = 'gen_resblock_3'
-    d = input_shape[0] // 4
-    in_channels = 256
-    shape = (d, d, in_channels)
-    out_channels = 128
-    x = ResBlockBottleneck(input_shape=shape,
-                 channels=out_channels,
-                 sampling='None',
-                 spectral_normalization=spectral_normalization,
-                 bn_epsilon=bn_epsilon,
-                 bn_momentum=bn_momentum,
-                 name='gen_resblock_30')(x)
-    shape = (d, d, out_channels)
-    x = ResBlockBottleneck(input_shape=shape,
-                 channels=out_channels,
-                 sampling='None',
-                 spectral_normalization=spectral_normalization,
-                 bn_epsilon=bn_epsilon,
-                 bn_momentum=bn_momentum,
-                 name='gen_resblock_31')(x)
-    x = ResBlockBottleneck(input_shape=shape,
-                 channels=out_channels,
-                 sampling='up',
-                 spectral_normalization=spectral_normalization,
-                 bn_epsilon=bn_epsilon,
-                 bn_momentum=bn_momentum,
-                 name='gen_resblock_32')(x)
-
-    name = 'gen_resblock_4'
-    d = input_shape[0] // 2
-    in_channels = 128
-    shape = (d, d, in_channels)
-    out_channels = 64
-    x = ResBlockBottleneck(input_shape=shape,
+    x = ResBlock(input_shape=shape,
                  channels=out_channels,
                  sampling='up',
                  spectral_normalization=spectral_normalization,
@@ -387,16 +244,56 @@ def generator(input_shape,
                  bn_momentum=bn_momentum,
                  name=name)(x)
 
-    # for i in range(5):
-    #    k = 2 ** i
-    #    name = "gen_resblock_" + str(i)
-    #    x = ResBlock(input_shape=(d * k, d * k, channels),
-    #                 channels=(channels // 2),
-    #                 sampling='up',
-    #                 bn_epsilon=bn_epsilon,
-    #                 bn_momentum=bn_momentum,
-    #                 name=name)(x)
-    #    channels //= 2
+    name = 'gen_resblock_1'
+    d = input_shape[0] // 16
+    shape = (d, d, in_channels)
+    out_channels = 512
+    x = ResBlock(input_shape=shape,
+                 channels=out_channels,
+                 sampling='up',
+                 spectral_normalization=spectral_normalization,
+                 bn_epsilon=bn_epsilon,
+                 bn_momentum=bn_momentum,
+                 name=name)(x)
+
+    name = 'gen_resblock_2'
+    d = input_shape[0] // 8
+    in_channels = 512
+    shape = (d, d, in_channels)
+    out_channels = 256
+    x = ResBlock(input_shape=shape,
+                 channels=out_channels,
+                 sampling='up',
+                 spectral_normalization=spectral_normalization,
+                 bn_epsilon=bn_epsilon,
+                 bn_momentum=bn_momentum,
+                 name=name)(x)
+
+    name = 'gen_resblock_3'
+    d = input_shape[0] // 4
+    in_channels = 256
+    shape = (d, d, in_channels)
+    out_channels = 128
+    x = ResBlock(input_shape=shape,
+                 channels=out_channels,
+                 sampling='up',
+                 spectral_normalization=spectral_normalization,
+                 bn_epsilon=bn_epsilon,
+                 bn_momentum=bn_momentum,
+                 name=name)(x)
+
+    name = 'gen_resblock_4'
+    d = input_shape[0] // 2
+    in_channels = 128
+    shape = (d, d, in_channels)
+    out_channels = 64
+    x = ResBlock(input_shape=shape,
+                 channels=out_channels,
+                 sampling='up',
+                 spectral_normalization=spectral_normalization,
+                 bn_epsilon=bn_epsilon,
+                 bn_momentum=bn_momentum,
+                 name=name)(x)
 
     x = BatchNormalization(epsilon=bn_epsilon, momentum=bn_momentum)(x)
     x = Activation('relu')(x)
