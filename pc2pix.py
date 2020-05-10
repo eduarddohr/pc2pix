@@ -160,11 +160,8 @@ class PC2Pix():
         print("test_azim_code min: ", np.amin(test_azim_code), " test_azim_code max: ", np.amax(test_azim_code))
         print("batch_size: ", self.batch_size, " pc_code_dim: ", self.pc_code_dim)
         print("Color images: ", self.color)
-        option_file = open("weights/opt.txt", "r")
+        option_file = open("/content/drive/My Drive/Licenta/Dohr/saved_weights/opt.txt", "r")
         steps_done = option_file.readline()
-        # total_time_spent = option_file.readline()
-        # total_time_spent = total_time_spent.split('.')
-        # start_time = start_time - datetime.datetime.strptime(total_time_spent[0], "%H:%M:%S")
         option_file.close()
         # steps_done = 0
         for step in range(int(steps_done), train_steps):
@@ -243,7 +240,7 @@ class PC2Pix():
                     prefix += "-gray"
                 if self.gen_spectral_normalization:
                     prefix += "-sn"
-                fname = os.path.join("weights", prefix + ".h5")
+                fname = "/content/drive/My Drive/Licenta/Dohr/saved_weights/" + prefix + ".h5"
                 self.generator_single.save_weights(fname)
                 prefix = self.category + "-dis"
                 if self.color:
@@ -252,24 +249,22 @@ class PC2Pix():
                     prefix += "-gray"
                 if self.gen_spectral_normalization:
                     prefix += "-sn"
-                fname = os.path.join("weights", prefix + ".h5")
+                fname = "/content/drive/My Drive/Licenta/Dohr/saved_weights/" + prefix + ".h5"
                 self.discriminator_single.save_weights(fname)
 
-                option_file = open("weights/opt.txt", "w")
+                option_file = open("/content/drive/My Drive/Licenta/Dohr/saved_weights/opt.txt", "w")
                 option_file.write(str(step))
                 option_file.close()
 
-                history_file = open("weights/history.txt", "a")
+                history_file = open("/content/drive/My Drive/Licenta/Dohr/saved_weights/history.txt", "a")
                 history_file.write(log + "\n")
                 history_file.close()
-
+            path = "/content/drive/My Drive/Licenta/Dohr/saved_weights/backup/resnet19_patchgan_"
             if (step + 1) % (save_interval * 2) == 0:
-                if os.path.isdir("weights/backup/resnet19_patchgan_" + str(step)) == False:
-                    os.mkdir("weights/backup/resnet19_patchgan_" + str(step))
-                self.generator_single.save_weights(
-                    "weights/backup/resnet19_patchgan_" + str(step) + "/chair-gen-color-" + str(step) + ".h5")
-                self.discriminator_single.save_weights(
-                    "weights/backup/resnet19_patchgan_" + str(step) + "/chair-dis-color-" + str(step) + ".h5")
+                if os.path.isdir(path + str(step)) == False:
+                    os.mkdir(path + str(step))
+                self.generator_single.save_weights(path + str(step) + "/chair-gen-color-" + str(step) + ".h5")
+                self.discriminator_single.save_weights(path + str(step) + "/chair-dis-color-" + str(step) + ".h5")
 
 
     def azim_loss(self, y_true, y_pred):
