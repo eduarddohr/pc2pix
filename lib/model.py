@@ -46,72 +46,31 @@ def ResBlockBottleneck(input_shape, sampling=None, trainable_sortcut=True,
              plot=False, name=None):
 
     res_block_input = Input(shape=input_shape)
-
-    if batch_normalization:
-        res_block_1 = BatchNormalization(momentum=bn_momentum, epsilon=bn_epsilon)(res_block_input)
-    else:
-        res_block_1 = res_block_input
-
-    res_block_1 = Activation('relu')(res_block_1)
-
-    if spectral_normalization:
-        res_block_1 = ConvSN2D(channels // 4, 1, strides=1, padding='same', kernel_initializer='glorot_uniform')(
-            res_block_1)
-    else:
-        res_block_1 = Conv2D(channels // 4, 1, strides=1, padding='same', kernel_initializer='glorot_uniform')(
-            res_block_1)
+    res_block_1 = BatchNormalization(momentum=bn_momentum, epsilon=bn_epsilon)(res_block_input)
+    res_block_1 = LeakyReLU(alpha=0.2)(res_block_1)
+    stride = 1
 
     if sampling == 'up':
-        res_block_1 = UpSampling2D()(res_block_1)
+        stride = 2
     else:
-        pass
+        stride = 1
 
-    if batch_normalization:
-        res_block_2 = BatchNormalization(momentum=bn_momentum, epsilon=bn_epsilon)(res_block_1)
-    else:
-        res_block_2 = res_block_1
-    res_block_2 = Activation('relu')(res_block_2)
-
-    if spectral_normalization:
-        res_block_2 = ConvSN2D(channels // 4, k_size, strides=1, padding='same', kernel_initializer='glorot_uniform')(
-            res_block_2)
-    else:
-        res_block_2 = Conv2D(channels // 4, k_size, strides=1, padding='same', kernel_initializer='glorot_uniform')(
-            res_block_2)
-
-    if sampling == 'down':
-        res_block_2 = AveragePooling2D()(res_block_2)
-    else:
-        pass
-
-    if batch_normalization:
-        res_block_3 = BatchNormalization(momentum=bn_momentum, epsilon=bn_epsilon)(res_block_2)
-    else:
-        res_block_3 = res_block_2
-    res_block_3 = Activation('relu')(res_block_3)
-
-    if spectral_normalization:
-        res_block_3 = ConvSN2D(channels, 1, strides=1, padding='same', kernel_initializer='glorot_uniform')(res_block_3)
-    else:
-        res_block_3 = Conv2D(channels, 1, strides=1, padding='same', kernel_initializer='glorot_uniform')(res_block_3)
+    res_block_1 = Conv2DTranspose(channels // 4, 1, strides=stride, padding='same', kernel_initializer='glorot_uniform')(
+        res_block_1)
+    res_block_2 = BatchNormalization(momentum=bn_momentum, epsilon=bn_epsilon)(res_block_1)
+    res_block_2 = LeakyReLU(alpha=0.2)(res_block_2)
+    res_block_2 = Conv2DTranspose(channels // 4, k_size, strides=1, padding='same', kernel_initializer='glorot_uniform')(res_block_2)
+    res_block_3 = BatchNormalization(momentum=bn_momentum, epsilon=bn_epsilon)(res_block_2)
+    res_block_3 = LeakyReLU(alpha=0.2)(res_block_3)
+    res_block_3 = Conv2DTranspose(channels, 1, strides=1, padding='same', kernel_initializer='glorot_uniform')(
+        res_block_3)
 
     if trainable_sortcut:
-        if spectral_normalization:
-            short_cut = ConvSN2D(channels, 1, strides=1, padding='same', kernel_initializer='glorot_uniform')(res_block_input)
-        else:
-            short_cut = Conv2D(channels, 1, strides=1, padding='same', kernel_initializer='glorot_uniform')(res_block_input)
+        short_cut = Conv2DTranspose(channels, 1, strides=stride, padding='same', kernel_initializer='glorot_uniform')(res_block_input)
     else:
         short_cut = res_block_input
 
-    if sampling == 'up':
-        short_cut = UpSampling2D()(short_cut)
-    elif sampling == 'down':
-        short_cut = AveragePooling2D()(short_cut)
-    elif sampling == 'None':
-        pass
-
     res_block_add = Add()([short_cut, res_block_3])
-
     res_block = Model(res_block_input, res_block_add, name=name)
 
     if plot:
@@ -219,7 +178,7 @@ def generator(input_shape,
         conv = ConvSN2D
         dense = DenseSN
     else:
-        conv = Conv2D
+        conv = Conv2DTranspose
         dense = Dense
 
     # inputs = Input(input_shape, name='noise')
