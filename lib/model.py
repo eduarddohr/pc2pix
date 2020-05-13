@@ -309,41 +309,21 @@ def generator(input_shape,
                  bn_momentum=bn_momentum,
                  name='gen_resblock_20')(x)
     shape = (d, d, out_channels)
-    x = ResBlockBottleneck(input_shape=shape,
-                 channels=out_channels,
-                 sampling='None',
-                 spectral_normalization=spectral_normalization,
-                 bn_epsilon=bn_epsilon,
-                 bn_momentum=bn_momentum,
-                 name='gen_resblock_21')(x)
-    x = ResBlockBottleneck(input_shape=shape,
-                 channels=out_channels,
-                 sampling='None',
-                 spectral_normalization=spectral_normalization,
-                 bn_epsilon=bn_epsilon,
-                 bn_momentum=bn_momentum,
-                 name='gen_resblock_22')(x)
-    x = ResBlockBottleneck(input_shape=shape,
-                 channels=out_channels,
-                 sampling='None',
-                 spectral_normalization=spectral_normalization,
-                 bn_epsilon=bn_epsilon,
-                 bn_momentum=bn_momentum,
-                 name='gen_resblock_23')(x)
-    x = ResBlockBottleneck(input_shape=shape,
-                 channels=out_channels,
-                 sampling='None',
-                 spectral_normalization=spectral_normalization,
-                 bn_epsilon=bn_epsilon,
-                 bn_momentum=bn_momentum,
-                 name='gen_resblock_24')(x)
+    for i in range(21):
+        x = ResBlockBottleneck(input_shape=shape,
+                               channels=out_channels,
+                               sampling='None',
+                               spectral_normalization=spectral_normalization,
+                               bn_epsilon=bn_epsilon,
+                               bn_momentum=bn_momentum,
+                               name='gen_resblock_2'+str(i+1))(x)
     x = ResBlockBottleneck(input_shape=shape,
                  channels=out_channels,
                  sampling='up',
                  spectral_normalization=spectral_normalization,
                  bn_epsilon=bn_epsilon,
                  bn_momentum=bn_momentum,
-                 name='gen_resblock_25')(x)
+                 name='gen_resblock_222')(x)
 
     #conv5
     name = 'gen_resblock_3'

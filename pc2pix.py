@@ -264,12 +264,12 @@ class PC2Pix():
                 history_file.close()
 
             if (step + 1) % (save_interval * 4) == 0:
-                if os.path.isdir("weights/backup/resnet50_patchgan_2_" + str(step)) == False:
-                    os.mkdir("weights/backup/resnet50_patchgan_2_" + str(step))
+                if os.path.isdir("weights/backup/resnet101_patchgan_" + str(step)) == False:
+                    os.mkdir("weights/backup/resnet101_patchgan_" + str(step))
                 self.generator_single.save_weights(
-                    "weights/backup/resnet50_patchgan_2_" + str(step) + "/chair-gen-color-" + str(step) + ".h5")
+                    "weights/backup/resnet101_patchgan_" + str(step) + "/chair-gen-color-" + str(step) + ".h5")
                 self.discriminator_single.save_weights(
-                    "weights/backup/resnet50_patchgan_2_" + str(step) + "/chair-dis-color-" + str(step) + ".h5")
+                    "weights/backup/resnet101_patchgan_" + str(step) + "/chair-dis-color-" + str(step) + ".h5")
 
 
     def azim_loss(self, y_true, y_pred):

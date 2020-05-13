@@ -9,3 +9,4 @@ weights/
 external/
 saved_models/
 __pycache__/
+images/gt_image.png
