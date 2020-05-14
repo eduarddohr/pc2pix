@@ -365,7 +365,7 @@ class PC2Pix():
         path = os.path.join(self.model_dir, "generator.png")
         plot_model(self.generator_single, to_file=path, show_shapes=True)
 
-        self.discriminator.trainable = True
+        self.discriminator.trainable = False
         if self.gen_spectral_normalization:
             optimizer = Adam(lr=0.5e-4, beta_1=0.0, beta_2=0.9)
         else:
