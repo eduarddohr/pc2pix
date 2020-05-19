@@ -259,7 +259,7 @@ class PC2Pix():
                 history_file = open("/content/drive/My Drive/Licenta/Dohr/saved_weights/history.txt", "a")
                 history_file.write(log + "\n")
                 history_file.close()
-            path = "/content/drive/My Drive/Licenta/Dohr/saved_weights/backup/resnet19_patchgan_"
+            path = "/content/drive/My Drive/Licenta/Dohr/saved_weights/backup/batch 128 color 64x64 resnet19+patchgan/resnet19_patchgan_"
             if (step + 1) % (save_interval * 2) == 0:
                 if os.path.isdir(path + str(step)) == False:
                     os.mkdir(path + str(step))
@@ -360,7 +360,7 @@ class PC2Pix():
         path = os.path.join(self.model_dir, "generator.png")
         plot_model(self.generator_single, to_file=path, show_shapes=True)
 
-        self.discriminator.trainable = True
+        self.discriminator.trainable = False
         if self.gen_spectral_normalization:
             optimizer = Adam(lr=0.5e-4, beta_1=0.0, beta_2=0.9)
         else:
