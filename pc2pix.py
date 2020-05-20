@@ -76,7 +76,7 @@ class PC2Pix():
             # color images 128x128 rgb
             # items = ['im_128', 'pc', 'elev', 'azim']
             # if big color (224 x 224) rgb
-            items = ['im_64', 'pc', 'elev', 'azim']
+            items = ['im_128', 'pc', 'elev', 'azim']
         else:
             # graycale images 224x224
             items = ['gray_128', 'pc', 'elev', 'azim']
@@ -261,12 +261,12 @@ class PC2Pix():
                 history_file.close()
 
             if (step + 1) % (save_interval * 4) == 0:
-                if os.path.isdir("/content/drive/My Drive/Licenta/Dohr/saved_weights/backup/resnet50_patchgan_b128/resnet50_patchgan_b128_" + str(step)) == False:
-                    os.mkdir("/content/drive/My Drive/Licenta/Dohr/saved_weights/backup/resnet50_patchgan_b128/resnet50_patchgan_b128_" + str(step))
+                if os.path.isdir("/content/drive/My Drive/Licenta/Dohr/saved_weights/backup/resnet50_patchgan_im128/resnet50_patchgan_b128_" + str(step)) == False:
+                    os.mkdir("/content/drive/My Drive/Licenta/Dohr/saved_weights/backup/resnet50_patchgan_im128/resnet50_patchgan_b128_" + str(step))
                 self.generator_single.save_weights(
-                    "/content/drive/My Drive/Licenta/Dohr/saved_weights/backup/resnet50_patchgan_b128/resnet50_patchgan_b128_" + str(step) + "/chair-gen-color-" + str(step) + ".h5")
+                    "/content/drive/My Drive/Licenta/Dohr/saved_weights/backup/resnet50_patchgan_im128/resnet50_patchgan_b128_" + str(step) + "/chair-gen-color-" + str(step) + ".h5")
                 self.discriminator_single.save_weights(
-                    "/content/drive/My Drive/Licenta/Dohr/saved_weights/backup/resnet50_patchgan_b128/resnet50_patchgan_b128_" + str(step) + "/chair-dis-color-" + str(step) + ".h5")
+                    "/content/drive/My Drive/Licenta/Dohr/saved_weights/backup/resnet50_patchgan_im128/resnet50_patchgan_b128_" + str(step) + "/chair-dis-color-" + str(step) + ".h5")
 
 
     def azim_loss(self, y_true, y_pred):
