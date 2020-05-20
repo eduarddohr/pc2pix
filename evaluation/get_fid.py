@@ -47,7 +47,7 @@ if __name__ == '__main__':
     start_time = datetime.datetime.now()
     t = 0
     gt = []
-    bl = []
+    # bl = []
     pc = []
     for key in js.keys():
         # key eg 03001627
@@ -62,40 +62,41 @@ if __name__ == '__main__':
             pred_path = os.path.join(pred_path_main, tag)
             for i in range(20):
                 gt_filename = os.path.join(gt_path, 'render_{}_128.png'.format(i))
-                blender_filename = os.path.join(pred_path, 'blender_render_{}_128.png'.format(i))
+                # blender_filename = os.path.join(pred_path, 'blender_render_{}_128.png'.format(i))
                 pc2pix_filename = os.path.join(pred_path, 'pc2pix_render_{}_128.png'.format(i))
 
-                gt_im = scipy.misc.imread(gt_filename)
-                bl_im = scipy.misc.imread(blender_filename)
-                pc_im = scipy.misc.imread(pc2pix_filename)
+                gt_im = scipy.misc.imread(gt_filename, mode='RGB')
+                # bl_im = scipy.misc.imread(blender_filename)
+                pc_im = scipy.misc.imread(pc2pix_filename, mode='RGB')
                 gt.append(gt_im)
-                bl.append(bl_im)
+                # bl.append(bl_im)
                 pc.append(pc_im)
 
             t += 1
             elapsed_time = datetime.datetime.now() - start_time
-            print(str(t), "/", test_len, ": ", blender_filename, pc2pix_filename, "Elapsed :", elapsed_time)
+            print(str(t), "/", test_len, ": ", pc2pix_filename, "Elapsed :", elapsed_time)
             print(np.array(gt).shape)
+            break
 
     gt = np.array(gt)
-    bl = np.array(bl)
+    # bl = np.array(bl)
     pc = np.array(pc)
 
     fid.create_inception_graph(inception_path)  # load the graph into the current TF graph
     with tf.Session() as sess:
         sess.run(tf.global_variables_initializer())
         mu_gt, sigma_gt = fid.calculate_activation_statistics(gt, sess)
-        mu_bl, sigma_bl = fid.calculate_activation_statistics(bl, sess)
+        # mu_bl, sigma_bl = fid.calculate_activation_statistics(bl, sess)
         mu_pc, sigma_pc = fid.calculate_activation_statistics(pc, sess)
 
-    fid_value = fid.calculate_frechet_distance(mu_bl, sigma_bl, mu_gt, sigma_gt)
+    # fid_value = fid.calculate_frechet_distance(mu_bl, sigma_bl, mu_gt, sigma_gt)
     filename = "fid.log"
     fd = open(filename, "a+")
-    fd.write("---| ")
-    fd.write(args.split_file)
-    fd.write(" |---\n")
-    print("Surface FID: %s" % fid_value)
-    fd.write("Surface FID: %s\n" % fid_value)
+    # fd.write("---| ")
+    # fd.write(args.split_file)
+    # fd.write(" |---\n")
+    # print("Surface FID: %s" % fid_value)
+    # fd.write("Surface FID: %s\n" % fid_value)
     fid_value = fid.calculate_frechet_distance(mu_pc, sigma_pc, mu_gt, sigma_gt)
     print("PC2PIX FID: %s" % fid_value)
     fd.write("PC2PIX FID: %s\n" % fid_value)

@@ -66,7 +66,7 @@ if __name__ == '__main__':
             # bl = None
             pc = None
             for i in range(20):
-                gt_filename = os.path.join(gt_path, 'render_{}_64.png'.format(i))
+                gt_filename = os.path.join(gt_path, 'render_{}_128.png'.format(i))
                 # blender_filename = os.path.join(pred_path, 'blender_render_{}_128.png'.format(i))
                 pc2pix_filename = os.path.join(pred_path, 'pc2pix_render_{}_128.png'.format(i))
 
@@ -77,7 +77,7 @@ if __name__ == '__main__':
                 gt_im = np.reshape(gt_im, [1, w, h, c])
                 # bl_im = scipy.misc.imread(blender_filename)
                 # bl_im = np.reshape(bl_im, [1, w, h, c])
-                pc_im = scipy.misc.imread(pc2pix_filename)
+                pc_im = scipy.misc.imread(pc2pix_filename, mode='RGB')
                 pc_im = np.reshape(pc_im, [1, w, h, c])
                 if gt is None:
                     gt = np.array(gt_im)
