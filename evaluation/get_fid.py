@@ -25,7 +25,8 @@ from msssim import ssim
 from utils import get_ply
 
 
-GT_PATH = "../data/shapenet_release/renders"
+# GT_PATH = "../data/shapenet_release/renders"
+GT_PATH = "../64_images_3"
 PRED_PATH = "data"
 
 inception_path = fid.check_or_download_inception(None) # download inception network
@@ -61,7 +62,7 @@ if __name__ == '__main__':
             gt_path = os.path.join(gt_path_main, tag)
             pred_path = os.path.join(pred_path_main, tag)
             for i in range(20):
-                gt_filename = os.path.join(gt_path, 'render_{}_128.png'.format(i))
+                gt_filename = os.path.join(gt_path, 'render_{}_64.png'.format(i))
                 # blender_filename = os.path.join(pred_path, 'blender_render_{}_128.png'.format(i))
                 pc2pix_filename = os.path.join(pred_path, 'pc2pix_render_{}_128.png'.format(i))
 
@@ -76,7 +77,6 @@ if __name__ == '__main__':
             elapsed_time = datetime.datetime.now() - start_time
             print(str(t), "/", test_len, ": ", pc2pix_filename, "Elapsed :", elapsed_time)
             print(np.array(gt).shape)
-            break
 
     gt = np.array(gt)
     # bl = np.array(bl)

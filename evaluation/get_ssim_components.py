@@ -26,7 +26,8 @@ from msssim import ssim
 from utils import get_ply
 
 
-GT_PATH = "../data/shapenet_release/renders"
+# GT_PATH = "../data/shapenet_release/renders"
+GT_PATH = "../64_images_3"
 PRED_PATH = "data"
 
 if __name__ == '__main__':
@@ -66,7 +67,7 @@ if __name__ == '__main__':
             # bl = None
             pc = None
             for i in range(20):
-                gt_filename = os.path.join(gt_path, 'render_{}_128.png'.format(i))
+                gt_filename = os.path.join(gt_path, 'render_{}_64.png'.format(i))
                 # blender_filename = os.path.join(pred_path, 'blender_render_{}_128.png'.format(i))
                 pc2pix_filename = os.path.join(pred_path, 'pc2pix_render_{}_128.png'.format(i))
 
