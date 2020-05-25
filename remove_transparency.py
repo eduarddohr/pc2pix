@@ -4,7 +4,7 @@ import os
 
 chair_folders = open("data/chair_folders.txt", "r")
 folder_count = 0
-RES = 64
+RES = 128
 
 # os.mkdir(str(RES) + "_images_3/")
 for folder in chair_folders:
@@ -16,7 +16,7 @@ for folder in chair_folders:
         # img = Image.open("data/shapenet_release/renders/03001627/" + folder.rstrip('\n') + "/render_" + str(i) + ".png")
         # img = img.resize((RES, RES), Image.ANTIALIAS)
 
-        png = Image.open("data/shapenet_release/renders/03001627/" + folder.rstrip('\n') + "/render_" + str(i) + "_64" + ".png")
+        png = Image.open("data/shapenet_release/renders/03001627/" + folder.rstrip('\n') + "/render_" + str(i) + "_" + str(RES) + ".png")
         png.load()  # required for png.split()
 
         background = Image.new("RGB", png.size, (255, 255, 255))
