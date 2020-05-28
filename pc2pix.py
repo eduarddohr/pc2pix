@@ -76,7 +76,7 @@ class PC2Pix():
             # color images 128x128 rgb
             # items = ['im_128', 'pc', 'elev', 'azim']
             # if big color (224 x 224) rgb
-            items = ['im_128', 'pc', 'elev', 'azim']
+            items = ['im_64', 'pc', 'elev', 'azim']
         else:
             # graycale images 224x224
             items = ['gray_128', 'pc', 'elev', 'azim']
@@ -263,12 +263,12 @@ class PC2Pix():
                 history_file.close()
 
             if (step + 1) % (save_interval * 4) == 0:
-                if os.path.isdir("/content/drive/My Drive/Licenta/Dohr/saved_weights/backup/resnet50_" + str(step)) == False:
-                    os.mkdir("/content/drive/My Drive/Licenta/Dohr/saved_weights/backup/resnet50_" + str(step))
+                if os.path.isdir("/content/drive/My Drive/Licenta/Dohr/saved_weights/backup/resnet50/resnet50_" + str(step)) == False:
+                    os.mkdir("/content/drive/My Drive/Licenta/Dohr/saved_weights/resnet50/backup/resnet50_" + str(step))
                 self.generator_single.save_weights(
-                    "/content/drive/My Drive/Licenta/Dohr/saved_weights/backup/resnet50_" + str(step) + "/chair-gen-color-" + str(step) + ".h5")
+                    "/content/drive/My Drive/Licenta/Dohr/saved_weights/backup/resnet50/resnet50_" + str(step) + "/chair-gen-color-" + str(step) + ".h5")
                 self.discriminator_single.save_weights(
-                    "/content/drive/My Drive/Licenta/Dohr/saved_weights/backup/resnet50_" + str(step) + "/chair-dis-color-" + str(step) + ".h5")
+                    "/content/drive/My Drive/Licenta/Dohr/saved_weights/backup/resnet50/resnet50_" + str(step) + "/chair-dis-color-" + str(step) + ".h5")
 
 
     def azim_loss(self, y_true, y_pred):
@@ -364,7 +364,7 @@ class PC2Pix():
         path = os.path.join(self.model_dir, "generator.png")
         plot_model(self.generator_single, to_file=path, show_shapes=True)
 
-        self.discriminator.trainable = True
+        self.discriminator.trainable = False
         if self.gen_spectral_normalization:
             optimizer = Adam(lr=1e-4, beta_1=0.0, beta_2=0.9)
         else:
