@@ -73,10 +73,10 @@ def ResBlockBottleneck(input_shape, sampling=None, trainable_sortcut=True,
     res_block_2 = Activation('relu')(res_block_2)
 
     if spectral_normalization:
-        res_block_2 = ConvSN2D(channels // 4, 3, strides=1, padding='same', kernel_initializer='glorot_uniform')(
+        res_block_2 = ConvSN2D(channels // 4, k_size, strides=1, padding='same', kernel_initializer='glorot_uniform')(
             res_block_2)
     else:
-        res_block_2 = Conv2D(channels // 4, 3, strides=1, padding='same', kernel_initializer='glorot_uniform')(
+        res_block_2 = Conv2D(channels // 4, k_size, strides=1, padding='same', kernel_initializer='glorot_uniform')(
             res_block_2)
 
     if sampling == 'down':
