@@ -11,3 +11,6 @@ weights/
 external/
 saved_models/
 __pycache__/
+evaluation/data/
+evaluation/plots3d/
+evaluation/TTUR/
