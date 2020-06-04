@@ -45,10 +45,10 @@ if __name__ == '__main__':
         # key eg 03001627
         view_path_main = os.path.join(VIEW_PATH, key)
         paths = [os.path.join(PLY_PATH, key)]
-        for v in variations:
-            path = os.path.join("ply", v)
-            path = os.path.join(path, key)
-            paths.append(path)
+        # for v in variations:
+        #     path = os.path.join("ply", v)
+        #     path = os.path.join(path, key)
+        #     paths.append(path)
 
         data = js[key]
         test = data['test']
@@ -72,7 +72,7 @@ if __name__ == '__main__':
                 target_path = os.path.join(PLOTS_PATH, tag + "-" + str(i) + ".png")
                 ply_file = os.path.join(path, tag + ".ply")
                 i += 1
-
+                print(ply_file)
                 ply_data = PlyData.read(ply_file)
                 points = ply_data['vertex']
                 pc = np.vstack([points['x'], points['y'], points['z']]).T
@@ -82,13 +82,13 @@ if __name__ == '__main__':
                                           show=False,
                                           elev=elev,
                                           azim=azim,
-                                          colorize='rainbow',
+                                          # colorize='rainbow',
                                           filename=target_path)
                 #fig.close('all')
                 image = np.array(Image.open(target_path)) / 255.0
                 images.append(image)
             print(str(t), view_file, ply_file, "-->", target_path, elev, azim)
-            plot_images(1, 5, images, tag + ".png", dir_name="point_clouds")
+            # plot_images(1, 5, images, tag + ".png", dir_name="point_clouds")
 
 
 

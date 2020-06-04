@@ -1,6 +1,8 @@
 data/
 128_images/
 64_images/
+128_images_3/
+64_images_3/
 gan_images/
 model_weights/
 model_weights1/
@@ -9,3 +11,6 @@ weights/
 external/
 saved_models/
 __pycache__/
+evaluation/data/
+evaluation/plots3d/
+evaluation/TTUR/
