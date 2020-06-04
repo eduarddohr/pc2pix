@@ -260,13 +260,14 @@ class PC2Pix():
                 history_file.write(log + "\n")
                 history_file.close()
 
-            if (step + 1) % (save_interval * 4) == 0:
-                if os.path.isdir("/content/drive/My Drive/Licenta/Dohr/saved_weights/backup/resnet50v2_patchgan_b128/resnet50_patchgan_b128_" + str(step)) == False:
-                    os.mkdir("/content/drive/My Drive/Licenta/Dohr/saved_weights/backup/resnet50v2_patchgan_b128/resnet50_patchgan_b128_" + str(step))
-                self.generator_single.save_weights(
-                    "/content/drive/My Drive/Licenta/Dohr/saved_weights/backup/resnet50v2_patchgan_b128/resnet50_patchgan_b128_" + str(step) + "/chair-gen-color-" + str(step) + ".h5")
-                self.discriminator_single.save_weights(
-                    "/content/drive/My Drive/Licenta/Dohr/saved_weights/backup/resnet50v2_patchgan_b128/resnet50_patchgan_b128_" + str(step) + "/chair-dis-color-" + str(step) + ".h5")
+            #
+            # if (step + 1) % (save_interval * 4) == 0:
+            #     if os.path.isdir("weights/backup/resnet50_patchgan_2_" + str(step)) == False:
+            #         os.mkdir("weights/backup/resnet50_patchgan_2_" + str(step))
+            #     self.generator_single.save_weights(
+            #         "weights/backup/resnet50_patchgan_2_" + str(step) + "/chair-gen-color-" + str(step) + ".h5")
+            #     self.discriminator_single.save_weights(
+            #         "weights/backup/resnet50_patchgan_2_" + str(step) + "/chair-dis-color-" + str(step) + ".h5")
 
 
     def azim_loss(self, y_true, y_pred):
