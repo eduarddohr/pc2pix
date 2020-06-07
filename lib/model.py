@@ -95,13 +95,18 @@ def ResBlockBottleneck(input_shape, sampling=None, trainable_sortcut=True,
     else:
         res_block_3 = Conv2D(channels, 1, strides=1, padding='same', kernel_initializer='glorot_uniform')(res_block_3)
 
-    if trainable_sortcut:
-        if spectral_normalization:
-            short_cut = ConvSN2D(channels, 1, strides=1, padding='same', kernel_initializer='glorot_uniform')(res_block_input)
-        else:
-            short_cut = Conv2D(channels, 1, strides=1, padding='same', kernel_initializer='glorot_uniform')(res_block_input)
+    if input_shape[2] != channels:
+        short_cut = Conv2D(channels, 1, strides=1, padding='same', kernel_initializer='glorot_uniform')(res_block_input)
     else:
         short_cut = res_block_input
+
+    # if trainable_sortcut:
+    #     if spectral_normalization:
+    #         short_cut = ConvSN2D(channels, 1, strides=1, padding='same', kernel_initializer='glorot_uniform')(res_block_input)
+    #     else:
+    #         short_cut = Conv2D(channels, 1, strides=1, padding='same', kernel_initializer='glorot_uniform')(res_block_input)
+    # else:
+    #     short_cut = res_block_input
 
     if sampling == 'up':
         short_cut = UpSampling2D()(short_cut)
