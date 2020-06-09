@@ -630,7 +630,7 @@ def discriminator(input_shape,
 
     aux_layer_pc = Flatten(name='aux_layer_pc')(x)
 
-    x = Activation('relu')(x)
+    x = LeakyReLU(alpha=0.2)(x)
     x = GlobalSumPooling2D()(x)
     preal = DenseSN(1, activation='sigmoid', kernel_initializer='glorot_uniform', name='real_fake')(x)
 
