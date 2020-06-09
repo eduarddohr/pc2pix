@@ -160,7 +160,7 @@ class PC2Pix():
         print("test_azim_code min: ", np.amin(test_azim_code), " test_azim_code max: ", np.amax(test_azim_code))
         print("batch_size: ", self.batch_size, " pc_code_dim: ", self.pc_code_dim)
         print("Color images: ", self.color)
-        option_file = open("/content/drive/My Drive/Licenta/Dohr/saved_weights/opt.txt", "r")
+        option_file = open("weights/opt.txt", "r")
         steps_done = option_file.readline()
         # total_time_spent = option_file.readline()
         # total_time_spent = total_time_spent.split('.')
@@ -231,10 +231,11 @@ class PC2Pix():
                             color=self.color,
                             show=show,
                             step=(step + 1))
-
+            if(step + 1) % 100 == 0 or step == 0:
+                print(log)
             if (step + 1) % save_interval == 0 or step == 0:
                 # save weights on a periodic basis
-                print(log)
+
                 prefix = self.category + "-gen"
                 if self.color:
                     prefix += "-color"
@@ -242,7 +243,7 @@ class PC2Pix():
                     prefix += "-gray"
                 if self.gen_spectral_normalization:
                     prefix += "-sn"
-                fname = "/content/drive/My Drive/Licenta/Dohr/saved_weights/" + prefix + ".h5"
+                fname = os.path.join("weights", prefix + ".h5")
                 self.generator_single.save_weights(fname)
                 prefix = self.category + "-dis"
                 if self.color:
@@ -251,17 +252,16 @@ class PC2Pix():
                     prefix += "-gray"
                 if self.gen_spectral_normalization:
                     prefix += "-sn"
-                fname = "/content/drive/My Drive/Licenta/Dohr/saved_weights/" + prefix + ".h5"
+                fname = os.path.join("weights", prefix + ".h5")
                 self.discriminator_single.save_weights(fname)
 
-                option_file = open("/content/drive/My Drive/Licenta/Dohr/saved_weights/opt.txt", "w")
+                option_file = open("weights/opt.txt", "w")
                 option_file.write(str(step))
                 option_file.close()
 
-                history_file = open("/content/drive/My Drive/Licenta/Dohr/saved_weights/history.txt", "a")
+                history_file = open("weights/history.txt", "a")
                 history_file.write(log + "\n")
                 history_file.close()
-
             if (step + 1) % (save_interval * 4) == 0:
                 if os.path.isdir("/content/drive/My Drive/Licenta/Dohr/saved_weights/backup/resnet50/resnet50_" + str(step)) == False:
                     os.mkdir("/content/drive/My Drive/Licenta/Dohr/saved_weights/resnet50/backup/resnet50_" + str(step))
